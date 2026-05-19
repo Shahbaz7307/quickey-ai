@@ -1,5 +1,5 @@
 import { useState } from "react";
-
+import { useEffect } from "react";
 import gsap from "gsap";
 
 import { useGSAP } from "@gsap/react";
@@ -35,6 +35,18 @@ function ChatPage() {
       duration: 0.6,
       ease: "power2.out",
     });
+  }, []);
+
+  useEffect(() => {
+    const handleQuickPrompt = (e) => {
+      setMessage(e.detail);
+    };
+
+    window.addEventListener("quickPrompt", handleQuickPrompt);
+
+    return () => {
+      window.removeEventListener("quickPrompt", handleQuickPrompt);
+    };
   }, []);
 
   const [message, setMessage] = useState("");
@@ -178,7 +190,7 @@ function ChatPage() {
 
       {/* CHAT AREA */}
 
-      <div className="flex-1 p-6 flex flex-col h-full overflow-hidden relative">
+      <div className="flex-1 p-3 flex flex-col h-full overflow-hidden relative">
         {/* MOBILE TOPBAR */}
 
         <div className="lg:hidden flex items-center justify-between mb-4 relative z-30">
@@ -194,11 +206,11 @@ function ChatPage() {
         {/* HEADER */}
 
         <div className="mb-6 page-header">
-          <h1 className="text-4xl font-bold tracking-tight">
+          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight leading-tight">
             QuicKey Intelligence
           </h1>
 
-          <p className="text-zinc-400 mt-2 text-sm">
+          <p className="hidden sm:block text-zinc-400 mt-2 text-sm">
             AI-powered locksmith intelligence platform
           </p>
         </div>

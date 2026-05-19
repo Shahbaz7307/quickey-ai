@@ -6,14 +6,7 @@ import {
   getSingleChat,
 } from "../services/chatService";
 
-const initialMessage = [
-  {
-    role: "ai",
-    content: "Hello! I am QuicKey Intelligence. How can I help you today?",
-  },
-];
-
-// const initialMessage = [];
+const initialMessage = [];
 
 const useChatStore = create((set, get) => ({
   loading: false,
