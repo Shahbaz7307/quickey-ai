@@ -1,3 +1,184 @@
 @import "tailwindcss";
+
 @plugin "@tailwindcss/typography";
 @plugin "tailwind-scrollbar";
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+
+  background:
+    radial-gradient(
+      circle at top left,
+      rgba(59, 130, 246, 0.15),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at top right,
+      rgba(6, 182, 212, 0.12),
+      transparent 25%
+    ),
+    linear-gradient(to bottom, #050816, #09090b);
+
+  color: white;
+
+  font-family: Inter, system-ui, sans-serif;
+
+  overflow: hidden;
+}
+
+/* SMOOTH SCROLL */
+
+* {
+  scroll-behavior: smooth;
+}
+
+/* PREMIUM SCROLLBAR */
+
+*::-webkit-scrollbar {
+  width: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+
+  border-radius: 999px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.24);
+}
+
+/* GLASS EFFECT */
+
+.glass {
+  background: rgba(255, 255, 255, 0.05);
+
+  backdrop-filter: blur(20px);
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* CHAT MARKDOWN */
+
+.prose {
+  color: white;
+
+  max-width: 100% !important;
+}
+
+.prose strong {
+  color: white;
+}
+
+.prose code {
+  background: rgba(255, 255, 255, 0.08);
+
+  padding: 2px 6px;
+
+  border-radius: 6px;
+}
+
+.prose pre {
+  border-radius: 16px;
+
+  overflow: hidden;
+}
+
+/* CHAT RESPONSE SPACING */
+
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4 {
+  margin-top: 0 !important;
+
+  margin-bottom: 0.75rem !important;
+}
+
+.prose ul {
+  margin-top: 0 !important;
+
+  margin-bottom: 0 !important;
+
+  padding-left: 1rem !important;
+}
+
+.prose li {
+  margin-top: 0 !important;
+
+  margin-bottom: 0.35rem !important;
+}
+
+.prose p {
+  margin-top: 0 !important;
+
+  margin-bottom: 0.5rem !important;
+}
+
+.prose > :first-child {
+  margin-top: 0 !important;
+}
+
+.prose > :last-child {
+  margin-bottom: 0 !important;
+}
+
+/* AMBIENT BACKGROUND GLOWS */
+
+.ambient-glow {
+  position: absolute;
+
+  border-radius: 999px;
+
+  filter: blur(120px);
+
+  pointer-events: none;
+
+  z-index: 0;
+
+  opacity: 0.5;
+}
+
+.glow-1 {
+  width: 320px;
+  height: 320px;
+
+  background: rgba(59, 130, 246, 0.18);
+
+  top: -100px;
+  left: -100px;
+}
+
+.glow-2 {
+  width: 280px;
+  height: 280px;
+
+  background: rgba(6, 182, 212, 0.16);
+
+  top: 30%;
+  right: -80px;
+}
+
+.glow-3 {
+  width: 260px;
+  height: 260px;
+
+  background: rgba(168, 85, 247, 0.12);
+
+  bottom: -80px;
+  left: 35%;
+}

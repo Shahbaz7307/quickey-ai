@@ -1,11 +1,13 @@
 import { useState } from "react";
 
+import { FileText, Loader2 } from "lucide-react";
+
 import { uploadPDF } from "../services/knowledgeService";
 
-function PDFUpload() {
+function PDFUpload({ iconOnly = false, setAttachedPdf }) {
   const [loading, setLoading] = useState(false);
 
-  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
 
   const handleUpload = async (e) => {
     const file = e.target.files[0];
@@ -15,38 +17,58 @@ function PDFUpload() {
     try {
       setLoading(true);
 
-      setMessage("");
+      setError("");
 
-      const data = await uploadPDF(file);
+      await uploadPDF(file);
 
-      setMessage(
-        `PDF uploaded successfully (${data.chunksCreated} chunks created)`,
-      );
-    } catch (error) {
-      console.log(error);
+      // SET PDF CHIP
 
-      setMessage("Upload failed");
+      setAttachedPdf(file.name);
+    } catch (err) {
+      console.log(err);
+
+      setError("Failed to upload PDF");
+
+      setTimeout(() => {
+        setError("");
+      }, 3000);
     } finally {
       setLoading(false);
     }
   };
 
-  return (
-    <div className="mb-4">
-      <label className="bg-zinc-800 hover:bg-zinc-700 text-white px-4 py-2 rounded-lg cursor-pointer inline-block">
-        {loading ? "Uploading..." : "Upload PDF"}
+  // ICON MODE
 
-        <input
-          type="file"
-          accept=".pdf"
-          onChange={handleUpload}
-          className="hidden"
-        />
-      </label>
+  if (iconOnly) {
+    return (
+      <div className="relative w-full h-full">
+        <label className="w-full h-full flex items-center justify-center cursor-pointer">
+          <input
+            type="file"
+            accept=".pdf"
+            onChange={handleUpload}
+            className="hidden"
+          />
 
-      {message && <p className="text-sm text-zinc-400 mt-2">{message}</p>}
-    </div>
-  );
+          {loading ? (
+            <Loader2 size={18} className="animate-spin" />
+          ) : (
+            <FileText size={18} />
+          )}
+        </label>
+
+        {/* ERROR */}
+
+        {error && (
+          <div className="absolute bottom-16 right-0 bg-red-500/10 border border-red-500/20 text-red-300 text-xs px-4 py-3 rounded-2xl backdrop-blur-xl whitespace-nowrap shadow-2xl">
+            {error}
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  return null;
 }
 
 export default PDFUpload;

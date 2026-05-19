@@ -1,27 +1,27 @@
 import { useState } from "react";
 
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import useAuthStore from "../store/authStore";
 
 function RegisterPage() {
   const navigate = useNavigate();
 
-  const { register, loading } =
-    useAuthStore();
+  const { register, loading } = useAuthStore();
 
-  const [formData, setFormData] =
-    useState({
-      name: "",
-      email: "",
-      password: "",
-    });
+  const [formData, setFormData] = useState({
+    name: "",
+
+    email: "",
+
+    password: "",
+  });
 
   const handleChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.name]:
-        e.target.value,
+
+      [e.target.name]: e.target.value,
     });
   };
 
@@ -38,51 +38,112 @@ function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white flex items-center justify-center">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-zinc-900 p-8 rounded-2xl w-full max-w-md flex flex-col gap-4"
-      >
-        <h1 className="text-3xl font-bold">
-          Register
-        </h1>
+    <div className="min-h-screen flex items-center justify-center px-6 relative overflow-hidden">
+      {/* BACKGROUND GLOW */}
 
-        <input
-          type="text"
-          name="name"
-          placeholder="Name"
-          value={formData.name}
-          onChange={handleChange}
-          className="p-3 rounded-lg bg-zinc-800 outline-none"
-        />
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-[-120px] left-[-120px] w-96 h-96 bg-blue-500/20 blur-3xl rounded-full" />
 
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={formData.email}
-          onChange={handleChange}
-          className="p-3 rounded-lg bg-zinc-800 outline-none"
-        />
+        <div className="absolute bottom-[-120px] right-[-120px] w-96 h-96 bg-cyan-500/20 blur-3xl rounded-full" />
+      </div>
 
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={formData.password}
-          onChange={handleChange}
-          className="p-3 rounded-lg bg-zinc-800 outline-none"
-        />
+      {/* CARD */}
 
-        <button
-          type="submit"
-          className="bg-blue-500 hover:bg-blue-600 p-3 rounded-lg"
-        >
-          {loading
-            ? "Loading..."
-            : "Register"}
-        </button>
-      </form>
+      <div className="glass w-full max-w-md rounded-[32px] p-8 relative z-10 shadow-2xl">
+        {/* LOGO */}
+
+        <div className="flex items-center gap-4 mb-8">
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center shadow-lg shadow-blue-500/20">
+            <span className="text-2xl font-bold">Q</span>
+          </div>
+
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight">QuicKey</h1>
+
+            <p className="text-zinc-400 text-sm">Locksmith Intelligence</p>
+          </div>
+        </div>
+
+        {/* HEADER */}
+
+        <div className="mb-8">
+          <h2 className="text-3xl font-bold tracking-tight">Create Account</h2>
+
+          <p className="text-zinc-400 mt-2 text-sm">
+            Start using QuicKey Intelligence today.
+          </p>
+        </div>
+
+        {/* FORM */}
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {/* NAME */}
+
+          <div>
+            <label className="text-sm text-zinc-400 mb-2 block">
+              Full Name
+            </label>
+
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              placeholder="Enter your full name"
+              className="w-full bg-white/[0.04] border border-white/10 focus:border-cyan-400/50 outline-none rounded-2xl px-5 py-4 text-white placeholder:text-zinc-500 transition-all"
+            />
+          </div>
+
+          {/* EMAIL */}
+
+          <div>
+            <label className="text-sm text-zinc-400 mb-2 block">Email</label>
+
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="Enter your email"
+              className="w-full bg-white/[0.04] border border-white/10 focus:border-cyan-400/50 outline-none rounded-2xl px-5 py-4 text-white placeholder:text-zinc-500 transition-all"
+            />
+          </div>
+
+          {/* PASSWORD */}
+
+          <div>
+            <label className="text-sm text-zinc-400 mb-2 block">Password</label>
+
+            <input
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              placeholder="Create a password"
+              className="w-full bg-white/[0.04] border border-white/10 focus:border-cyan-400/50 outline-none rounded-2xl px-5 py-4 text-white placeholder:text-zinc-500 transition-all"
+            />
+          </div>
+
+          {/* BUTTON */}
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:scale-[1.02] active:scale-95 transition-all duration-200 py-4 rounded-2xl font-semibold shadow-lg shadow-cyan-500/20 disabled:opacity-50"
+          >
+            {loading ? "Creating Account..." : "Create Account"}
+          </button>
+        </form>
+
+        {/* FOOTER */}
+
+        <p className="text-sm text-zinc-400 text-center mt-6">
+          Already have an account?{" "}
+          <Link to="/login" className="text-cyan-400 hover:text-cyan-300">
+            Sign in
+          </Link>
+        </p>
+      </div>
     </div>
   );
 }

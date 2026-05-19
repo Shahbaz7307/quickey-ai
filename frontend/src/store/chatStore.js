@@ -13,6 +13,8 @@ const initialMessage = [
   },
 ];
 
+// const initialMessage = [];
+
 const useChatStore = create((set, get) => ({
   loading: false,
 
