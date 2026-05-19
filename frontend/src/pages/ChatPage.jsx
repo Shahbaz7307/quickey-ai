@@ -5,7 +5,7 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 
 import useChatStore from "../store/chatStore";
-
+import { Menu } from "lucide-react";
 import Sidebar from "../components/Sidebar";
 
 import ChatInput from "../components/ChatInput";
@@ -30,45 +30,46 @@ function ChatPage() {
       delay: 0.15,
       ease: "power2.out",
     });
-
-    gsap.from(".sidebar", {
-      x: -20,
+    gsap.from(".sidebar-panel", {
       opacity: 0,
-      duration: 0.8,
+      duration: 0.6,
       ease: "power2.out",
     });
   }, []);
 
   const [message, setMessage] = useState("");
 
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [attachedPdf, setAttachedPdf] = useState("");
+  const [selectedImages, setSelectedImages] = useState([]);
+  const [attachedPdfs, setAttachedPdfs] = useState([]);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const { messages, loading, sendMessage, addMessage } = useChatStore();
 
-  const handleImageUpload = (file) => {
-    if (!file) return;
+  const handleImageUpload = (files) => {
+    if (!files?.length) return;
 
-    setSelectedImage({
+    const newImages = files.map((file) => ({
       file,
-
       preview: URL.createObjectURL(file),
-    });
+    }));
+
+    setSelectedImages((prev) => [...prev, ...newImages]);
   };
 
   const handleSend = async () => {
-    if (!message.trim() && !selectedImage) return;
+    if (!message.trim() && selectedImages.length === 0) return;
 
     try {
       // IMAGE FLOW
 
-      if (selectedImage) {
-        // STORE VALUES BEFORE CLEARING
-        const imageFile = selectedImage.file;
+      if (selectedImages.length > 0) {
+        const firstImage = selectedImages[0];
 
-        const imagePreview = selectedImage.preview;
+        const imageFile = firstImage.file;
 
-        const imageName = message || selectedImage.file.name;
+        const imagePreview = firstImage.preview;
+
+        const imageName = message || firstImage.file.name;
 
         // TEMP USER IMAGE
         addMessage({
@@ -91,9 +92,10 @@ function ChatPage() {
         });
 
         // CLEAR INPUT IMMEDIATELY
-        setSelectedImage(null);
+        setSelectedImages([]);
 
         setMessage("");
+        setAttachedPdfs([]);
 
         // ANALYZE IMAGE
         const data = await analyzeImage(imageFile);
@@ -143,6 +145,8 @@ function ChatPage() {
         await sendMessage(message);
 
         setMessage("");
+
+        setAttachedPdfs([]);
       }
     } catch (error) {
       console.log(error);
@@ -150,16 +154,43 @@ function ChatPage() {
   };
 
   return (
-    <div className="h-screen text-white flex overflow-hidden relative">
+    <div className="h-screen text-white flex overflow-x-hidden relative">
       {/* SIDEBAR */}
 
-      <div className="sidebar">
+      {/* MOBILE OVERLAY */}
+
+      {sidebarOpen && (
+        <div
+          onClick={() => setSidebarOpen(false)}
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden"
+        />
+      )}
+
+      {/* SIDEBAR */}
+
+      <div
+        className={`sidebar fixed lg:relative top-0 left-0 z-50 lg:z-auto h-screen w-[280px] sm:w-80 transition-transform duration-300 lg:translate-x-0 ${
+          sidebarOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
         <Sidebar />
       </div>
 
       {/* CHAT AREA */}
 
       <div className="flex-1 p-6 flex flex-col h-full overflow-hidden relative">
+        {/* MOBILE TOPBAR */}
+
+        <div className="lg:hidden flex items-center justify-between mb-4 relative z-30">
+          <button
+            onClick={() => setSidebarOpen(true)}
+            className="w-11 h-11 rounded-2xl bg-white/[0.05] border border-white/10 flex items-center justify-center"
+          >
+            <Menu size={20} />
+          </button>
+
+          <h2 className="font-semibold">QuicKey</h2>
+        </div>
         {/* HEADER */}
 
         <div className="mb-6 page-header">
@@ -186,11 +217,11 @@ function ChatPage() {
             setMessage={setMessage}
             sendMessage={handleSend}
             handleImageUpload={handleImageUpload}
-            selectedImage={selectedImage}
-            setSelectedImage={setSelectedImage}
+            selectedImages={selectedImages}
+            setSelectedImages={setSelectedImages}
             loading={loading}
-            attachedPdf={attachedPdf}
-            setAttachedPdf={setAttachedPdf}
+            attachedPdfs={attachedPdfs}
+            setAttachedPdfs={setAttachedPdfs}
           />
         </div>
       </div>

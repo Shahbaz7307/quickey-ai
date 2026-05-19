@@ -49,10 +49,10 @@ function Sidebar() {
     });
   }, [chats]);
   return (
-    <div className="w-80 h-full relative pl-2 py-2">
+    <div className="w-[280px] sm:w-80 h-screen relative p-2">
       {/* SIDEBAR PANEL */}
 
-      <div className="h-full glass rounded-3xl border border-white/10 px-5 py-6 flex flex-col overflow-hidden backdrop-blur-2xl">
+      <div className="sidebar-panel h-full max-w-full glass rounded-3xl border border-white/10 px-5 py-6 flex flex-col overflow-hidden backdrop-blur-2xl">
         {/* TOP */}
 
         <div className="mb-6">

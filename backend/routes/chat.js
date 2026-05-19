@@ -2,7 +2,7 @@ import express from "express";
 
 import Chat from "../models/Chat.js";
 
-import { createAIStream } from "../services/aiService.js";
+import { createAIStream, generateChatTitle } from "../services/aiService.js";
 
 import { searchKnowledge } from "../services/knowledgeService.js";
 
@@ -69,10 +69,12 @@ router.post(
 
           await chat.save();
         } else {
+          const title = await generateChatTitle(message);
+
           chat = await Chat.create({
             userId: req.userId,
 
-            title: message.slice(0, 30),
+            title,
 
             messages: [
               {
@@ -146,10 +148,12 @@ router.post(
 
         await chat.save();
       } else {
+        const title = await generateChatTitle(message);
+
         chat = await Chat.create({
           userId: req.userId,
 
-          title: message.slice(0, 30),
+          title,
 
           messages: [
             {
@@ -266,7 +270,7 @@ router.post("/image", authMiddleware, async (req, res) => {
       chat = await Chat.create({
         userId: req.userId,
 
-        title: content ? content.slice(0, 30) : "Image Chat",
+        title: await generateChatTitle(content || "Image Analysis"),
 
         messages: [userImageMessage, aiMessage],
       });

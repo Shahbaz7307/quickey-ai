@@ -9,11 +9,11 @@ function ChatInput({
   setMessage,
   sendMessage,
   handleImageUpload,
-  selectedImage,
-  setSelectedImage,
+  selectedImages,
+  setSelectedImages,
   loading,
-  attachedPdf,
-  setAttachedPdf,
+  attachedPdfs,
+  setAttachedPdfs,
 }) {
   const fileInputRef = useRef(null);
 
@@ -29,49 +29,73 @@ function ChatInput({
 
   return (
     <div className="relative">
-      {/* IMAGE PREVIEW */}
+      {/* ATTACHMENTS */}
 
-      {selectedImage && (
-        <div className="mb-4 relative w-fit">
-          <img
-            src={selectedImage.preview}
-            alt="preview"
-            className="w-32 h-32 object-cover rounded-2xl border border-white/10 shadow-xl"
-          />
+      {(selectedImages.length > 0 || attachedPdfs.length > 0) && (
+        <div className="flex flex-wrap gap-3 mb-4">
+          {/* IMAGE CHIPS */}
 
-          {/* REMOVE IMAGE */}
+          {selectedImages.map((image, index) => (
+            <div
+              key={`image-${index}`}
+              className="flex items-center gap-3 bg-white/[0.04] border border-white/10 rounded-2xl px-3 py-2 backdrop-blur-xl"
+            >
+              <img
+                src={image.preview}
+                alt="preview"
+                className="w-10 h-10 rounded-xl object-cover"
+              />
 
-          <button
-            onClick={() => setSelectedImage(null)}
-            className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-red-500 hover:bg-red-600 transition-all flex items-center justify-center shadow-lg"
-          >
-            ✕
-          </button>
-        </div>
-      )}
+              <div className="max-w-[140px]">
+                <p className="text-sm text-white truncate">{image.file.name}</p>
 
-      {/* ATTACHED PDF */}
+                <p className="text-xs text-zinc-400">Image attached</p>
+              </div>
 
-      {attachedPdf && (
-        <div className="mb-4 inline-flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/[0.04] border border-white/10 backdrop-blur-xl">
-          <FileText size={18} className="text-cyan-400" />
+              <button
+                onClick={() =>
+                  setSelectedImages((prev) =>
+                    prev.filter((_, i) => i !== index),
+                  )
+                }
+                className="text-zinc-500 hover:text-red-400 transition-colors text-lg"
+              >
+                ✕
+              </button>
+            </div>
+          ))}
 
-          <p className="text-sm text-zinc-200 max-w-[220px] truncate">
-            {attachedPdf}
-          </p>
+          {/* PDF CHIPS */}
 
-          <button
-            onClick={() => setAttachedPdf("")}
-            className="text-zinc-500 hover:text-white transition-colors"
-          >
-            ✕
-          </button>
+          {attachedPdfs.map((pdf, index) => (
+            <div
+              key={`pdf-${index}`}
+              className="flex items-center gap-3 bg-white/[0.04] border border-white/10 rounded-2xl px-3 py-2 backdrop-blur-xl"
+            >
+              <FileText size={18} className="text-cyan-400" />
+
+              <div className="max-w-[160px]">
+                <p className="text-sm text-white truncate">{pdf}</p>
+
+                <p className="text-xs text-zinc-400">Knowledge attached</p>
+              </div>
+
+              <button
+                onClick={() =>
+                  setAttachedPdfs((prev) => prev.filter((_, i) => i !== index))
+                }
+                className="text-zinc-500 hover:text-red-400 transition-colors text-lg"
+              >
+                ✕
+              </button>
+            </div>
+          ))}
         </div>
       )}
 
       {/* INPUT CONTAINER */}
 
-      <div className="flex items-end gap-3 bg-white/[0.03] border border-white/10 rounded-3xl p-3 backdrop-blur-2xl shadow-2xl">
+      <div className="bg-white/[0.03] border border-white/10 rounded-3xl p-3 backdrop-blur-2xl shadow-2xl">
         {/* TEXTAREA */}
 
         <textarea
@@ -80,42 +104,52 @@ function ChatInput({
           onChange={(e) => setMessage(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="Ask QuicKey Intelligence..."
-          className="flex-1 bg-transparent outline-none resize-none text-white placeholder:text-zinc-500 px-3 py-3 max-h-40"
+          className="w-full bg-transparent outline-none resize-none text-white placeholder:text-zinc-500 px-2 py-2 max-h-40"
         />
 
-        {/* FILE INPUT */}
+        {/* ACTION ROW */}
 
-        <input
-          type="file"
-          ref={fileInputRef}
-          className="hidden"
-          accept="image/*"
-          onChange={(e) => handleImageUpload(e.target.files[0])}
-        />
+        <div className="flex items-center justify-between mt-3">
+          {/* LEFT ACTIONS */}
 
-        {/* IMAGE BUTTON */}
+          <div className="flex items-center gap-2">
+            {/* FILE INPUT */}
 
-        <button
-          onClick={() => fileInputRef.current.click()}
-          className="w-14 h-14 rounded-2xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 transition-all duration-300 flex items-center justify-center hover:scale-105"
-        >
-          <ImagePlus size={20} />
-        </button>
+            <input
+              type="file"
+              ref={fileInputRef}
+              className="hidden"
+              accept="image/*"
+              multiple
+              onChange={(e) => handleImageUpload(Array.from(e.target.files))}
+            />
 
-        {/* PDF Upload BUTTON */}
-        <div className="w-14 h-14 rounded-2xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 transition-all duration-300 flex items-center justify-center hover:scale-105 overflow-hidden">
-          <PDFUpload iconOnly setAttachedPdf={setAttachedPdf} />
+            {/* IMAGE BUTTON */}
+
+            <button
+              onClick={() => fileInputRef.current.click()}
+              className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 transition-all duration-300 flex items-center justify-center"
+            >
+              <ImagePlus size={18} />
+            </button>
+
+            {/* PDF BUTTON */}
+
+            <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 transition-all duration-300 flex items-center justify-center overflow-hidden">
+              <PDFUpload iconOnly setAttachedPdfs={setAttachedPdfs} />
+            </div>
+          </div>
+
+          {/* SEND BUTTON */}
+
+          <button
+            onClick={sendMessage}
+            disabled={loading}
+            className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-r from-blue-500 to-cyan-500 active:scale-95 transition-all duration-300 flex items-center justify-center shadow-lg shadow-cyan-500/20 disabled:opacity-50"
+          >
+            <Send size={18} />
+          </button>
         </div>
-
-        {/* SEND BUTTON */}
-
-        <button
-          onClick={sendMessage}
-          disabled={loading}
-          className="w-14 h-14 rounded-2xl bg-gradient-to-r from-blue-500 to-cyan-500 hover:scale-105 active:scale-95 transition-all duration-300 flex items-center justify-center shadow-lg shadow-cyan-500/20 hover:shadow-cyan-400/40 disabled:opacity-50"
-        >
-          <Send size={20} />
-        </button>
       </div>
     </div>
   );

@@ -4,26 +4,31 @@ import { FileText, Loader2 } from "lucide-react";
 
 import { uploadPDF } from "../services/knowledgeService";
 
-function PDFUpload({ iconOnly = false, setAttachedPdf }) {
+function PDFUpload({ iconOnly = false, setAttachedPdfs }) {
   const [loading, setLoading] = useState(false);
 
   const [error, setError] = useState("");
 
   const handleUpload = async (e) => {
-    const file = e.target.files[0];
+    const files = Array.from(e.target.files);
 
-    if (!file) return;
+    if (!files.length) return;
 
     try {
       setLoading(true);
 
       setError("");
 
-      await uploadPDF(file);
+      for (const file of files) {
+        await uploadPDF(file);
 
-      // SET PDF CHIP
+        setAttachedPdfs((prev) => [...prev, file.name]);
 
-      setAttachedPdf(file.name);
+        // AUTO REMOVE CHIP
+        setTimeout(() => {
+          setAttachedPdfs([]);
+        }, 1500);
+      }
     } catch (err) {
       console.log(err);
 
@@ -46,6 +51,7 @@ function PDFUpload({ iconOnly = false, setAttachedPdf }) {
           <input
             type="file"
             accept=".pdf"
+            multiple
             onChange={handleUpload}
             className="hidden"
           />

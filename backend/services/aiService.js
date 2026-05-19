@@ -54,3 +54,53 @@ ${knowledgeContext || "No knowledge available"}
 
   return stream;
 };
+
+export const generateChatTitle = async (message) => {
+  try {
+    const client = new OpenAI({
+      apiKey: process.env.GROQ_API_KEY,
+
+      baseURL: "https://api.groq.com/openai/v1",
+    });
+
+    const completion = await client.chat.completions.create({
+      model: "meta-llama/llama-4-scout-17b-16e-instruct",
+
+      messages: [
+        {
+          role: "system",
+
+          content: `
+Generate a concise professional chat title.
+
+Rules:
+- Maximum 5 words
+- Do not use quotes
+- Do not say:
+  "this document"
+  "uploaded file"
+  "analysis request"
+- Infer the real topic if possible
+- Make it look like a ChatGPT conversation title
+`,
+        },
+
+        {
+          role: "user",
+
+          content: message,
+        },
+      ],
+
+      temperature: 0.3,
+
+      max_tokens: 20,
+    });
+
+    return completion.choices[0].message.content.trim();
+  } catch (error) {
+    console.log(error);
+
+    return "New Chat";
+  }
+};

@@ -78,6 +78,10 @@ export const streamChatMessage = async (message, chatId, messages, onChunk) => {
     const chunk = decoder.decode(result.value);
 
     if (chunk) {
+      // SMALL DELAY FOR SMOOTH STREAMING
+
+      await new Promise((resolve) => setTimeout(resolve, 12));
+
       onChunk(chunk);
     }
   }

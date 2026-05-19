@@ -155,21 +155,55 @@ function ChatMessages({ messages, loading }) {
             {/* SOURCES */}
 
             {message.sources && message.sources.length > 0 && (
-              <div className="mt-4 flex flex-col gap-2">
-                <p className="text-xs text-zinc-400">Sources</p>
+              <div className="mt-5">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-2 h-2 rounded-full bg-cyan-400" />
 
-                {message.sources.map((source, index) => (
-                  <div
-                    key={index}
-                    className="bg-white/[0.03] border border-white/10 rounded-2xl p-3 backdrop-blur-xl hover:bg-white/[0.05] transition-all duration-300"
-                  >
-                    <p className="font-medium text-sm">📄 {source.title}</p>
+                  <p className="text-xs uppercase tracking-[0.2em] text-zinc-400 font-medium">
+                    Knowledge Sources
+                  </p>
+                </div>
 
-                    <p className="text-zinc-400 text-xs">
-                      Similarity: {Math.round(source.score * 100)}%
-                    </p>
-                  </div>
-                ))}
+                <div className="space-y-3">
+                  {message.sources.map((source, index) => (
+                    <div
+                      key={index}
+                      className="group rounded-2xl border border-white/10 bg-white/[0.03] hover:bg-white/[0.05] transition-all duration-300 backdrop-blur-xl overflow-hidden"
+                    >
+                      {/* TOP */}
+
+                      <div className="flex items-center justify-between px-4 py-3 border-b border-white/5">
+                        <div className="flex items-center gap-3">
+                          <div className="w-9 h-9 rounded-xl bg-cyan-500/10 border border-cyan-400/20 flex items-center justify-center text-cyan-300 text-sm">
+                            📄
+                          </div>
+
+                          <div>
+                            <p className="text-sm font-medium text-white">
+                              Source {index + 1}
+                            </p>
+
+                            <p className="text-xs text-zinc-500">
+                              AI knowledge retrieval
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="text-xs px-2 py-1 rounded-full bg-cyan-500/10 text-cyan-300 border border-cyan-400/20">
+                          {Math.round(source.score * 100)}% match
+                        </div>
+                      </div>
+
+                      {/* CONTENT */}
+
+                      <div className="p-4">
+                        <p className="text-sm leading-7 text-zinc-300 line-clamp-5">
+                          {source.text}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
           </>
